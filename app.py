@@ -7,3 +7,6 @@ AUTH = ("neo4j", "GB2CSsX2B-dgthvoGxcaStQD1t1AoO0vVClJeSuh0rI")
 
 app = Flask(__name__)
 
+@app.route("/cars")
+def list_cars():
+    return render_template("cars.html")

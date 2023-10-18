@@ -27,4 +27,6 @@ def list_cars():
 
 @app.route("/cars/add")
 def add_car():
+    with driver.session() as session:
+        result = session.run("CREATE (c:Car) {make: $make}")
     return jsonify()

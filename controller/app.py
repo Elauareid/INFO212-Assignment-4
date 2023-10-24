@@ -3,6 +3,7 @@ from neo4j import GraphDatabase, Driver, AsyncGraphDatabase, AsyncDriver
 import re
 from project.model.Car import listCars, addCar, updateCar, deleteCar
 from project.model.Customer import listCustomers, addCustomer, updateCustomer, deleteCustomer
+from project.model.Employee import listEmployees, addEmployee, updateEmployee, deleteEmployee
 from flask import Flask, render_template, redirect, request, jsonify
 
 @app.route('/cars')
@@ -84,8 +85,8 @@ def customer_index():
     data = []
     try:
         data = listCustomers()
-    except errno:
-        print (errno)
+    except Exception as e:
+        print (f"Error: {e}")
     return jsonify(data)
     return render_template('cars.html.j2', data = data)
 
@@ -94,8 +95,8 @@ def customer_list():
     data = []
     try:
         data = listCustomers()
-    except errno:
-        print (errno)
+    except Exception as e:
+        print (f"Error: {e}")
     return render_template('customers.html.j2', data = data)
 
 @app.route('/customers/add', methods=["GET", "POST"])
@@ -133,7 +134,7 @@ def delete_customer():
         id = int(request.form["id"])
         try:
             deleteCustomer(id)
-            data = listCustomers
+            data = listCustomers()
             return jsonify(data)
         except Exception as e:
             print(f"Error: {e}")
@@ -150,3 +151,75 @@ def delete_customer_from_list():
         except Exception as e:
             print(f"Error: {e}")
     return render_template('delete_customer.html.j2')
+
+@app.route('/employees')
+def employee_index():
+    data = []
+    try:
+        data = listEmployees()
+    except Exception as e:
+        print (f"Error: {e}")
+    return jsonify(data)
+    return render_template('employees.html.j2', data = data)
+
+@app.route('/employees/list')
+def employee_list():
+    data = []
+    try:
+        data = listEmployees()
+    except Exception as e:
+        print (f"Error: {e}")
+    return render_template('employees.html.j2', data = data)
+
+@app.route('/employees/add', methods=["GET", "POST"])
+def add_employee():
+    data = []
+    if request.method == "POST":
+        name = request.form["name"]
+        address = request.form["address"]
+        branch = request.form["branch"]
+        try:
+            addEmployee(name,address,branch)
+            data = listEmployees()
+        except Exception as e:
+            print(f"Error {e}")
+        return jsonify(data)
+        return render_template('employees.html.j2', data=data)
+    return render_template('add_employee.html.j2')
+
+@app.route('/employees/update', methods=["GET", "POST"])
+def update_employee():
+    if request.method == "POST":
+        id = int(request.form["id"])
+        newBranch = request.form["newBranch"]
+        try:
+            updateEmployee(id, newBranch)
+            data = listEmployees()
+            return jsonify(data)    
+        except Exception as e:
+            print(f"Error: {e}")
+    return render_template('update_employee.html.j2')
+
+@app.route('/employees/delete', methods=["GET", "POST"])
+def delete_employee():
+    if request.method == "POST":
+        id = int(request.form["id"])
+        try:
+            deleteEmployee(id)
+            data = listEmployees()
+            return jsonify(data)
+        except Exception as e:
+            print(f"Error: {e}")
+    return render_template('delete_customer.html.j2')
+
+@app.route('/employees/list/delete', methods=["GET", "POST"])
+def delete_employees_from_list():
+    if request.method == "POST":
+        id = int(request.form["id"])
+        try:
+            deleteEmployee(id)
+            data = listEmployees()
+            return render_template('employees.html.j2', data=data)
+        except Exception as e:
+            print(f"Error: {e}")
+    return render_template('delete_employees.html.j2')

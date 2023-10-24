@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ data['title'] }}</title>
+  </head>
+  <body>
+<h1>
+    List customers:
+</h1>
+    {% for customer in data %}
+      <h2>{{ customer['name'] }}</h2>
+      <p>Age: {{ customer['age'] }}</p>
+      <p>Address: {{ customer['address'] }}</p>
+      <form method="post" action="/customers/list/delete">
+        <input type="hidden" name="id" value="{{ customer['id'] }}">
+        <button type="submit">Delete</button>
+      </form>
+    {% endfor %}
+  </body>
+</html>

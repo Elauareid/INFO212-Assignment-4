@@ -1,4 +1,3 @@
-import errno
 from project import app
 from neo4j import GraphDatabase, Driver, AsyncGraphDatabase, AsyncDriver
 import re
@@ -11,8 +10,8 @@ def car_index():
     data = []
     try:
         data = listCars()
-    except errno:
-        print (errno)
+    except Exception as e:
+        print (f"Error: {e}")
     return jsonify(data)
     return render_template('cars.html.j2', data = data)
 
@@ -21,8 +20,8 @@ def car_list():
     data = []
     try:
         data = listCars()
-    except errno:
-        print (errno)
+    except Exception as e:
+        print (f"Error: {e}")
     return render_template('cars.html.j2', data = data)
 
 @app.route('/cars/add', methods=["GET", "POST"])

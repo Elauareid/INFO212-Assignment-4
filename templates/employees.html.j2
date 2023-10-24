@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ data['title'] }}</title>
+  </head>
+  <body>
+<h1>
+    List employees:
+</h1>
+    {% for employee in data %}
+      <h2>{{ employee['name'] }}</h2>
+      <p>Address: {{ employee['address'] }}</p>
+      <p>Branch: {{ employee['branch'] }}</p>
+      <form method="post" action="/employees/list/delete">
+        <input type="hidden" name="id" value="{{ employee['id'] }}">
+        <button type="submit">Delete</button>
+      </form>
+    {% endfor %}
+  </body>
+</html>

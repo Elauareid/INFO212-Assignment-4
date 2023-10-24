@@ -1,32 +1,80 @@
+import errno
+from project import app
 from neo4j import GraphDatabase, Driver, AsyncGraphDatabase, AsyncDriver
 import re
+from project.model.Car import listCars, addCar, updateCar, deleteCar
 from flask import Flask, render_template, redirect, request, jsonify
 
-app = Flask(__name__)
+@app.route('/cars')
+def index():
+    data = []
+    try:
+        data = listCars()
+    except errno:
+        print (errno)
+    return jsonify(data)
+    return render_template('cars.html.j2', data = data)
 
-URI = "neo4j+s://1d9eb7a2.databases.neo4j.io:7687"
-AUTH = ("neo4j", "GB2CSsX2B-dgthvoGxcaStQD1t1AoO0vVClJeSuh0rI")
+@app.route('/cars/list')
+def car_list():
+    data = []
+    try:
+        data = listCars()
+    except errno:
+        print (errno)
+    return render_template('cars.html.j2', data = data)
 
-driver = GraphDatabase.driver(uri=URI, auth=AUTH)
-
-@app.route("/cars")
-def list_cars():
-    cars = []
-    with driver.session() as session:
-        result = session.run("MATCH (c:Car) RETURN c.make as make, c.model as model, c.year as year, c.location as loc, c.status as status")
-        for record in result:
-            cars.append({
-            'make' : record["make"],
-            'model' : record["model"],
-            'year' : record["year"],
-            'loc' : record["loc"],
-            'status' : record["status"]
-            })
-        print(cars)
-    return jsonify(cars)
-
-@app.route("/cars/add")
+@app.route('/cars/add', methods=["GET", "POST"])
 def add_car():
-    with driver.session() as session:
-        result = session.run("CREATE (c:Car) {make: $make}")
-    return jsonify()
+    data = []
+    if request.method == "POST":
+        make = request.form["make"]
+        model = request.form["model"]
+        year = request.form["year"]
+        location = request.form["location"]
+        status = request.form["status"]
+        try:
+            addCar(make,model,year,location,status)
+            data = listCars()
+        except Exception as e:
+            print(f"Error {e}")
+        return jsonify(data)
+        return render_template('cars.html.j2', data=data)
+    return render_template('add_car.html.j2')
+
+@app.route('/cars/update', methods=["GET", "POST"])
+def update_car():
+    if request.method == "POST":
+        id = int(request.form["id"])
+        newStatus = request.form["newStatus"]
+        try:
+            updateCar(id, newStatus)
+            data = listCars()
+            return jsonify(data)    
+        except Exception as e:
+            print(f"Error: {e}")
+    return render_template('update_car.html.j2')
+
+@app.route('/cars/delete', methods=["GET", "POST"])
+def delete_car():
+    if request.method == "POST":
+        id = int(request.form["id"])
+        try:
+            deleteCar(id)
+            data = listCars()
+            return jsonify(data)
+        except Exception as e:
+            print(f"Error: {e}")
+    return render_template('delete_car.html.j2')
+
+@app.route('/cars/list/delete', methods=["GET", "POST"])
+def delete_car_from_list():
+    if request.method == "POST":
+        id = int(request.form["id"])
+        try:
+            deleteCar(id)
+            data = listCars()
+            return render_template('cars.html.j2', data=data)
+        except Exception as e:
+            print(f"Error: {e}")
+    return render_template('delete_car.html.j2')

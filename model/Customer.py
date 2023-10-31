@@ -2,10 +2,11 @@ from project.model.Driver import _get_connection
 import re
 
 class Customer:
-    def __init__(self, name, age, address):
+    def __init__(self, name, age, address, bookedCar):
         self.name = name
         self.age = age
         self.address = address
+        self.bookedCar = bookedCar
 
 def listCustomers():
     customers = []
@@ -13,13 +14,18 @@ def listCustomers():
     if driver != None:
         with driver.session() as session:
             try:
-                result = session.run("MATCH (c:Customer) RETURN ID(c) as id, c.name as name, c.age as age, c.address as address")
+                result = session.run(
+                    "MATCH (c:Customer) "
+                    "OPTIONAL MATCH (c)-[:BOOKED]->(car:Car) "
+                    "RETURN ID(c) as id, c.name as name, c.age as age, c.address as address, ID(car) as bookedCar"
+                    )
                 for record in result:
                     customers.append({
                     'id' : record["id"],
                     'name' : record["name"],
                     'age' : record["age"],
-                    'address' : record["address"]
+                    'address' : record["address"],
+                    'bookedCar' : record["bookedCar"]
                     })
                 print(customers)
                 return customers
@@ -60,7 +66,6 @@ def updateCustomer(id, newAddress):
                 return
             except Exception as e:
                 print(f"Error: ",e)
-                print(f"{id} is not a Customer.")
                 return
     print("Driver is not connected")
     return

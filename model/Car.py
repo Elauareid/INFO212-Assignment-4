@@ -68,7 +68,6 @@ def updateCar(id, newStatus):
                 return
             except Exception as e:
                 print(f"Error: ",e)
-                print(f"{id} is not a Car.")
                 return
     print("Driver is not connected")
     return
@@ -79,7 +78,7 @@ def deleteCar(id):
         with driver.session() as session:
             try:
                 session.run(
-                    "MATCH (c:Car) WHERE ID(c) = $id DELETE c",
+                    "MATCH (c:Car) WHERE ID(c) = $id DETACH DELETE c",
                     id=id
                 )
                 return

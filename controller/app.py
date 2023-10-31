@@ -4,6 +4,7 @@ import re
 from project.model.Car import listCars, addCar, updateCar, deleteCar
 from project.model.Customer import listCustomers, addCustomer, updateCustomer, deleteCustomer
 from project.model.Employee import listEmployees, addEmployee, updateEmployee, deleteEmployee
+from project.model.Order import orderCar, cancelOrder
 from flask import Flask, render_template, redirect, request, jsonify
 
 @app.route('/cars')
@@ -223,3 +224,29 @@ def delete_employees_from_list():
         except Exception as e:
             print(f"Error: {e}")
     return render_template('delete_employees.html.j2')
+
+@app.route('/cars/order', methods=["GET", "POST"])
+def order_car():
+    data = []
+    if request.method == "POST":
+        customerId = int(request.form["customerId"])
+        carId = int(request.form["carId"])
+        try:
+            orderCar(customerId,carId)
+            data = listCustomers()
+        except Exception as e:
+            print(f"Error: {e}")
+    return jsonify(data)
+
+@app.route('/cars/order/delete', methods=["GET", "POST"])
+def cancel_order():
+    data = []
+    if request.method == "POST":
+        customerId = int(request.form["customerId"])
+        carId = int(request.form["carId"])
+        try:
+            cancelOrder(customerId,carId)
+            data = listCustomers()
+        except Exception as e:
+            print(f"Error: {e}")
+    return jsonify(data)

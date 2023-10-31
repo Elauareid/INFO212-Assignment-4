@@ -60,7 +60,6 @@ def updateEmployee(id, newBranch):
                 return
             except Exception as e:
                 print(f"Error: ",e)
-                print(f"{id} is not an Employee.")
                 return
     print("Driver is not connected")
     return

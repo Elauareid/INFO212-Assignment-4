@@ -1,6 +1,4 @@
-from neo4j import GraphDatabase, Driver
 from project.model.Driver import _get_connection
-import re
 
 class Car:
     def __init__(self, make, model, year, location, status):
@@ -26,12 +24,8 @@ def listCars():
                     'location' : record["location"],
                     'status' : record["status"]
                     })
-                print(cars)
-                return cars
             except Exception as e:
                 print(f"Error: ",e)
-                return cars
-    print("Driver not connected")
     return cars
 
 def addCar(make,model,year,location,status):
@@ -47,11 +41,8 @@ def addCar(make,model,year,location,status):
                     location=location,
                     status=status
                     )
-                return
             except Exception as e:
                 print(f"Error: {e}")
-                return
-    print("Driver not connected")
     return
 
 def updateCar(id, newStatus):
@@ -64,12 +55,8 @@ def updateCar(id, newStatus):
                     id=id, 
                     newStatus=newStatus
                 )
-                print(f"ID: {id}, New Status: {newStatus}")
-                return
             except Exception as e:
                 print(f"Error: ",e)
-                return
-    print("Driver is not connected")
     return
 
 def deleteCar(id):
@@ -81,9 +68,6 @@ def deleteCar(id):
                     "MATCH (c:Car) WHERE ID(c) = $id DETACH DELETE c",
                     id=id
                 )
-                return
             except Exception as e:
                 print(f"Error: {e}")
-                return
-    print("Driver is not connected")
     return

@@ -1,5 +1,4 @@
 from project.model.Driver import _get_connection
-import re
 
 class Employee:
     def __init__(self, name, address, branch):
@@ -21,12 +20,8 @@ def listEmployees():
                     'address' : record["address"],
                     'branch' : record["branch"]
                     })
-                print(employees)
-                return employees
             except Exception as e:
                 print(f"Error: ",e)
-                return employees
-    print("Driver not connected")
     return employees
 
 def addEmployee(name, address, branch):
@@ -40,11 +35,8 @@ def addEmployee(name, address, branch):
                     address=address,
                     branch=branch
                     )
-                return
             except Exception as e:
                 print(f"Error: {e}")
-                return
-    print("Driver not connected")
     return
 
 def updateEmployee(id, newBranch):
@@ -57,11 +49,8 @@ def updateEmployee(id, newBranch):
                     id=id, 
                     newBranch=newBranch
                 )
-                return
             except Exception as e:
                 print(f"Error: ",e)
-                return
-    print("Driver is not connected")
     return
 
 def deleteEmployee(id):
@@ -73,9 +62,6 @@ def deleteEmployee(id):
                     "MATCH (e:Employee) WHERE ID(e) = $id DELETE e",
                     id=id
                 )
-                return
             except Exception as e:
                 print(f"Error: {e}")
-                return
-    print("Driver is not connected")
     return
